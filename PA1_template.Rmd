@@ -7,16 +7,46 @@ output:
 
 
 ## Loading and preprocessing the data
+```{r loading_and_preprocessing_the_data, echo = TRUE}
+InstallAndLoadRequiredPackages <- function() {
+  # Load the required packages.
+  if (!require('pacman')) {
+    install.packages('pacman')
+  }
+  pacman::p_load(data.table, dtplyr, tidyverse)
+}
 
+InstallAndLoadRequiredPackages()
+
+activity.monitoring.data <- read_csv('activity.zip') %>%
+  mutate(interval = as.factor(interval))
+```
 
 
 ## What is mean total number of steps taken per day?
+```{r mean_total_steps_per_day, echo = TRUE}
+activity.monitoring.data %>%
+  group_by(date) %>%
+  summarise(mean.steps = mean(steps, na.rm = TRUE)) %>%
+  ggplot(aes(date, mean.steps)) + geom_bar(stat = 'identity')
+```
 
+## What is median total number of steps taken per day?
+```{r median_total_steps_per_day, echo = TRUE}
+activity.monitoring.data %>%
+  group_by(date) %>%
+  summarise(median.steps = median(steps, na.rm = TRUE)) %>%
+  ggplot(aes(date, median.steps)) + geom_bar(stat = 'identity')
+```
 
 
 ## What is the average daily activity pattern?
-
-
+```{r median_total_steps_per_day, echo = TRUE}
+activity.monitoring.data %>%
+  group_by(interval) %>%
+  summarise(mean.steps = mean(steps, na.rm = TRUE)) %>%
+  ggplot(aes(interval, mean.steps)) + geom_point()
+```
 
 ## Imputing missing values
 
