@@ -42,7 +42,7 @@ activity.monitoring.data.total.steps.per.day <-  activity.monitoring.data %>%
 activity.monitoring.data.total.steps.per.day %>%
   ggplot(aes(date, total.steps)) + geom_col() +
   ggtitle('Activity Monitoring Data, Total Steps per Date') +
-  ylab('total steps')
+  ylab('total steps taken')
 ```
 
 ![](PA1_template_files/figure-html/total_steps_per_day-1.png)<!-- -->
@@ -50,40 +50,28 @@ activity.monitoring.data.total.steps.per.day %>%
 ## What is mean number of steps taken per day?
 
 ```r
-activity.monitoring.data.mean.steps.per.day <- activity.monitoring.data %>%
-  group_by(date) %>%
-  summarise(mean.steps = mean(steps, na.rm = TRUE)) 
+activity.monitoring.data.mean.steps.per.day <- mean(activity.monitoring.data.total.steps.per.day$total.steps, 
+                                                    na.rm = TRUE)
 
-activity.monitoring.data.mean.steps.per.day %>%
-  ggplot(aes(date, mean.steps)) + geom_col() +
-  ggtitle('Activity Monitoring Data, Average Steps per Date') +
-  ylab('average steps')
+print(paste('Mean number of steps taken per day:', as.integer(activity.monitoring.data.mean.steps.per.day)))
 ```
 
 ```
-## Warning: Removed 8 rows containing missing values (position_stack).
+## [1] "Mean number of steps taken per day: 9354"
 ```
-
-![](PA1_template_files/figure-html/mean_steps_per_day-1.png)<!-- -->
 
 ## What is median total number of steps taken per day?
 
 ```r
-activity.monitoring.data.median.steps.per.day <- activity.monitoring.data %>%
-  group_by(date) %>%
-  summarise(median.steps = median(steps, na.rm = TRUE)) 
+activity.monitoring.data.median.steps.per.day <- median(activity.monitoring.data.total.steps.per.day$total.steps, 
+                                                    na.rm = TRUE)
 
-activity.monitoring.data.median.steps.per.day %>%
-  ggplot(aes(date, median.steps)) + geom_col() +
-  ggtitle('Activity Monitoring Data, Median Step per Date') +
-  ylab('median step')
+print(paste('Median number of steps taken per day:', as.integer(activity.monitoring.data.median.steps.per.day)))
 ```
 
 ```
-## Warning: Removed 8 rows containing missing values (position_stack).
+## [1] "Median number of steps taken per day: 10395"
 ```
-
-![](PA1_template_files/figure-html/median_total_steps_per_day-1.png)<!-- -->
 
 
 ## What is the average daily activity pattern?
@@ -128,13 +116,11 @@ activity.monitoring.data.na.filled.total.steps.per.day <-  activity.monitoring.d
   group_by(date) %>%
   summarise(total.steps = sum(steps))
 
-activity.monitoring.data.na.filled.mean.steps.per.day <- activity.monitoring.data.na.filled %>%
-  group_by(date) %>%
-  summarise(mean.steps = mean(steps))
+activity.monitoring.data.na.filled.mean.steps.per.day <- 
+  mean(activity.monitoring.data.na.filled.total.steps.per.day$total.steps)
 
-activity.monitoring.data.na.filled.median.steps.per.day <- activity.monitoring.data.na.filled %>%
-  group_by(date) %>%
-  summarise(median.steps = median(steps))
+activity.monitoring.data.na.filled.median.steps.per.day <- 
+  median(activity.monitoring.data.na.filled.total.steps.per.day$total.steps)
 
 ### 
 
@@ -144,42 +130,46 @@ bind_rows('ORIGINAL' = activity.monitoring.data.total.steps.per.day,
   ggplot(aes(date, total.steps, fill = from.NA.filled)) +
   geom_col(position = "dodge") +
   ggtitle('Activity Monitoring Data, Original and NA-Filled comparison') +
-  ylab('total steps')
+  ylab('total steps taken')
 ```
 
 ![](PA1_template_files/figure-html/inputting_missing_values-1.png)<!-- -->
 
 ```r
-bind_rows('ORIGINAL' = activity.monitoring.data.mean.steps.per.day,
-          'NA-FILLED (with Interval Mean)' = activity.monitoring.data.na.filled.mean.steps.per.day,
-          .id = 'from.NA.filled') %>%
-  ggplot(aes(date, mean.steps, fill = from.NA.filled)) +
-  geom_col(position = "dodge") +
-  ggtitle('Activity Monitoring Data, Original and NA-Filled comparison') +
-  ylab('mean steps')
+print(paste('Mean number of steps taken per day, ORIGINAL:', 
+            as.integer(activity.monitoring.data.mean.steps.per.day)))
 ```
 
 ```
-## Warning: Removed 8 rows containing missing values (geom_col).
+## [1] "Mean number of steps taken per day, ORIGINAL: 9354"
 ```
-
-![](PA1_template_files/figure-html/inputting_missing_values-2.png)<!-- -->
 
 ```r
-bind_rows('ORIGINAL' = activity.monitoring.data.median.steps.per.day,
-          'NA-FILLED (with Interval Mean)' = activity.monitoring.data.na.filled.median.steps.per.day,
-          .id = 'from.NA.filled') %>%
-  ggplot(aes(date, median.steps, fill = from.NA.filled)) +
-  geom_col(position = "dodge") +
-  ggtitle('Activity Monitoring Data, Original and NA-Filled comparison') +
-  ylab('median step')
+print(paste('Mean number of steps taken per day, NA-FILLED:', 
+            as.integer(activity.monitoring.data.na.filled.mean.steps.per.day)))
 ```
 
 ```
-## Warning: Removed 8 rows containing missing values (geom_col).
+## [1] "Mean number of steps taken per day, NA-FILLED: 10766"
 ```
 
-![](PA1_template_files/figure-html/inputting_missing_values-3.png)<!-- -->
+```r
+print(paste('Median number of steps taken per day, ORIGINAL:', 
+            as.integer(activity.monitoring.data.median.steps.per.day)))
+```
+
+```
+## [1] "Median number of steps taken per day, ORIGINAL: 10395"
+```
+
+```r
+print(paste('Median number of steps taken per day, NA-FILLED:', 
+            as.integer(activity.monitoring.data.na.filled.median.steps.per.day)))
+```
+
+```
+## [1] "Median number of steps taken per day, NA-FILLED: 10766"
+```
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
