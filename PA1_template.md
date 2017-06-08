@@ -147,7 +147,7 @@ bind_rows('ORIGINAL' = activity.monitoring.data.total.steps.per.day,
   ylab('total steps')
 ```
 
-![](PA1_template_files/figure-html/inputting missing values-1.png)<!-- -->
+![](PA1_template_files/figure-html/inputting_missing_values-1.png)<!-- -->
 
 ```r
 bind_rows('ORIGINAL' = activity.monitoring.data.mean.steps.per.day,
@@ -163,7 +163,7 @@ bind_rows('ORIGINAL' = activity.monitoring.data.mean.steps.per.day,
 ## Warning: Removed 8 rows containing missing values (geom_col).
 ```
 
-![](PA1_template_files/figure-html/inputting missing values-2.png)<!-- -->
+![](PA1_template_files/figure-html/inputting_missing_values-2.png)<!-- -->
 
 ```r
 bind_rows('ORIGINAL' = activity.monitoring.data.median.steps.per.day,
@@ -179,7 +179,7 @@ bind_rows('ORIGINAL' = activity.monitoring.data.median.steps.per.day,
 ## Warning: Removed 8 rows containing missing values (geom_col).
 ```
 
-![](PA1_template_files/figure-html/inputting missing values-3.png)<!-- -->
+![](PA1_template_files/figure-html/inputting_missing_values-3.png)<!-- -->
 
 
 ## Are there differences in activity patterns between weekdays and weekends?

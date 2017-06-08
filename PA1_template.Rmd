@@ -76,7 +76,7 @@ average.steps.by.interval %>%
 ```
 
 ## Inputting missing values
-```{r inputting missing values, echo = TRUE}
+```{r inputting_missing_values, echo = TRUE}
 print(paste('Total number of missing values in the dataset:', sum(is.na(activity.monitoring.data$steps))))
 
 ###
