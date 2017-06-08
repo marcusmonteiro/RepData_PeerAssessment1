@@ -18,8 +18,7 @@ InstallAndLoadRequiredPackages <- function() {
 
 InstallAndLoadRequiredPackages()
 
-activity.monitoring.data <- read_csv('activity.zip') %>%
-  mutate(interval = as.factor(interval))
+activity.monitoring.data <- read_csv('activity.zip')
 ```
 
 
@@ -28,7 +27,9 @@ activity.monitoring.data <- read_csv('activity.zip') %>%
 activity.monitoring.data %>%
   group_by(date) %>%
   summarise(mean.steps = mean(steps, na.rm = TRUE)) %>%
-  ggplot(aes(date, mean.steps)) + geom_bar(stat = 'identity')
+  ggplot(aes(date, mean.steps)) + geom_bar(stat = 'identity') +
+  ggtitle('Activity Monitoring Data, Average Steps per Date') +
+  ylab('average steps')
 ```
 
 ## What is median total number of steps taken per day?
@@ -36,16 +37,27 @@ activity.monitoring.data %>%
 activity.monitoring.data %>%
   group_by(date) %>%
   summarise(median.steps = median(steps, na.rm = TRUE)) %>%
-  ggplot(aes(date, median.steps)) + geom_bar(stat = 'identity')
+  ggplot(aes(date, median.steps)) + geom_bar(stat = 'identity') +
+  ggtitle('Activity Monitoring Data, Median Step per Date') +
+  ylab('median step')
 ```
 
 
 ## What is the average daily activity pattern?
 ```{r median_total_steps_per_day, echo = TRUE}
-activity.monitoring.data %>%
+average.steps.by.interval <- activity.monitoring.data %>%
   group_by(interval) %>%
-  summarise(mean.steps = mean(steps, na.rm = TRUE)) %>%
-  ggplot(aes(interval, mean.steps)) + geom_point()
+  summarise(mean.steps = mean(steps, na.rm = TRUE))
+
+average.steps.by.interval %>%
+  ggplot(aes(interval, mean.steps)) +
+  geom_line() +
+  ggtitle('Activity Monitoring Data, Average Steps per 5-minute Interval') +
+  xlab('5-minute interval') +
+  ylab('average steps') +
+  geom_point(data = subset(average.steps.by.interval, mean.steps == max(mean.steps))) +
+  geom_text(aes(label = ifelse(mean.steps == max(mean.steps), paste('Interval with max steps: ', interval), '')), 
+            hjust = 1, vjust = 0)
 ```
 
 ## Imputing missing values
