@@ -21,12 +21,25 @@ InstallAndLoadRequiredPackages()
 activity.monitoring.data <- read_csv('activity.zip')
 ```
 
-
-## What is mean total number of steps taken per day?
-```{r mean_total_steps_per_day, echo = TRUE}
-activity.monitoring.data %>%
+## What is the total number of steps taken per day?
+```{r total_steps_per_day, echo = TRUE}
+activity.monitoring.data.total.steps.per.day <-  activity.monitoring.data %>%
   group_by(date) %>%
-  summarise(mean.steps = mean(steps, na.rm = TRUE)) %>%
+  summarise(total.steps = sum(steps, na.rm = TRUE)) 
+
+activity.monitoring.data.total.steps.per.day %>%
+  ggplot(aes(date, total.steps)) + geom_bar(stat = 'identity') +
+  ggtitle('Activity Monitoring Data, Total Steps per Date') +
+  ylab('total steps')
+```
+
+## What is mean number of steps taken per day?
+```{r mean_steps_per_day, echo = TRUE}
+activity.monitoring.data.mean.steps.per.day <- activity.monitoring.data %>%
+  group_by(date) %>%
+  summarise(mean.steps = mean(steps, na.rm = TRUE)) 
+
+activity.monitoring.data.mean.steps.per.day %>%
   ggplot(aes(date, mean.steps)) + geom_bar(stat = 'identity') +
   ggtitle('Activity Monitoring Data, Average Steps per Date') +
   ylab('average steps')
@@ -34,9 +47,11 @@ activity.monitoring.data %>%
 
 ## What is median total number of steps taken per day?
 ```{r median_total_steps_per_day, echo = TRUE}
-activity.monitoring.data %>%
+activity.monitoring.data.median.steps.per.day <- activity.monitoring.data %>%
   group_by(date) %>%
-  summarise(median.steps = median(steps, na.rm = TRUE)) %>%
+  summarise(median.steps = median(steps, na.rm = TRUE)) 
+
+activity.monitoring.data.median.steps.per.day %>%
   ggplot(aes(date, median.steps)) + geom_bar(stat = 'identity') +
   ggtitle('Activity Monitoring Data, Median Step per Date') +
   ylab('median step')
@@ -60,8 +75,48 @@ average.steps.by.interval %>%
             hjust = 1, vjust = 0)
 ```
 
-## Imputing missing values
+## Inputting missing values
+```{r inputting missing values, echo = TRUE}
+print(paste('Total number of missing values in the dataset:', sum(is.na(activity.monitoring.data$steps))))
 
+###
+
+activity.monitoring.data.na.filled <- activity.monitoring.data %>%
+  mutate(steps = ifelse(is.na(steps), average.steps.by.interval$mean.steps, steps))
+
+###
+
+activity.monitoring.data.na.filled.total.steps.per.day <-  activity.monitoring.data.na.filled %>%
+  group_by(date) %>%
+  summarise(total.steps = sum(steps))
+
+activity.monitoring.data.na.filled.mean.steps.per.day <- activity.monitoring.data.na.filled %>%
+  group_by(date) %>%
+  summarise(mean.steps = mean(steps))
+
+activity.monitoring.data.na.filled.median.steps.per.day <- activity.monitoring.data.na.filled %>%
+  group_by(date) %>%
+  summarise(median.steps = median(steps))
+
+### 
+
+bind_rows(activity.monitoring.data.total.steps.per.day,
+          activity.monitoring.data.na.filled.total.steps.per.day, .id = 'from.NA.filled') %>%
+  ggplot(aes(date, total.steps)) + geom_bar(stat = 'identity', aes(color = from.NA.filled)) +
+  ggtitle('Activity Monitoring Data, NA Filled, Total Steps per Date') +
+  ylab('total steps')
+
+activity.monitoring.data.na.filled.mean.steps.per.day %>%
+  ggplot(aes(date, mean.steps)) + geom_bar(stat = 'identity') +
+  ggtitle('Activity Monitoring Data, NA Filled, Average Steps per Date') +
+  ylab('average steps')
+
+activity.monitoring.data.na.filled.median.steps.per.day %>%
+  ggplot(aes(date, median.steps)) + geom_bar(stat = 'identity') +
+  ggtitle('Activity Monitoring Data, NA Filled, Median Step per Date') +
+  ylab('median step')
+
+```
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
