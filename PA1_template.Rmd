@@ -44,7 +44,7 @@ activity.monitoring.data %>%
 
 
 ## What is the average daily activity pattern?
-```{r median_total_steps_per_day, echo = TRUE}
+```{r average_activity_daily_pattern, echo = TRUE}
 average.steps.by.interval <- activity.monitoring.data %>%
   group_by(interval) %>%
   summarise(mean.steps = mean(steps, na.rm = TRUE))
